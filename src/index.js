@@ -698,42 +698,27 @@ export default class MeasureTool {
     return this._projectionUtility.latLngToSvgPoint(d)[1] + offset;
   }
 
+  /**
+   * Update area
+   * 
+   * @param {*} i index of updated point
+   * @param {*} pointToCompare updated point
+   */
   _updateArea(i, pointToCompare) {
     if (!this._geometry) return;
+    let area = 0;
     const n = this._geometry.nodes.length;
-    const tolerance = 1 / 80 *  this.length;
-    let offset, area = 0;
+
+    // if enough points, calculate area
     if (n > 2) {
-      if (i === 0) {
-        offset = this._helper.computeLengthBetween(
-          this._geometry.nodes[n - 1],
-          pointToCompare);
-        area = offset > tolerance ? 0 : this._helper.computeArea([
-            pointToCompare,
-            ...this._geometry.nodes.slice(1, n - 1)
-          ]);
-      } else if (i === n - 1) {
-        offset = this._helper.computeLengthBetween(
-          pointToCompare,
-          this._geometry.nodes[0]);
-        area = offset > tolerance ? 0 : this._helper.computeArea(this._geometry.nodes.slice(0, n - 1));
-      } else if (i > 0 && i < n - 1) {
-        offset = this._helper.computeLengthBetween(
-          this._geometry.nodes[0],
-          this._geometry.nodes[n - 1]);
-        area = offset > tolerance ? 0 : this._helper.computeArea([
-            ...this._geometry.nodes.slice(0, i),
-            pointToCompare,
-            ...this._geometry.nodes.slice(i + 1)
-          ]);
-      } else {
-        offset = this._helper.computeLengthBetween(
-          this._geometry.nodes[0],
-          this._geometry.nodes[n - 1]);
-        area = offset > tolerance ? 0 : this._helper.computeArea(this._geometry.nodes);
-      }
+      let nodes = this._geometry.nodes
+      if (i && pointToCompare)
+        nodes[i] = pointToCompare
+      area = this._helper.computeArea(nodes)
     }
     this._area = area;
+
+    // measure_tick event
     if (typeof this._events.get(EVENT_TICK) === "function") {
       this._events.get(EVENT_TICK)({
         result: {
@@ -745,6 +730,8 @@ export default class MeasureTool {
         }
       });
     }
+
+    // label on last node
     if (area > 0) {
       this._nodeText.select(':last-child')
         .text(`Total distance: ${this.lengthText}; Total area: ${this.areaText}.`);
