@@ -10,8 +10,8 @@ $opaque-white: rgba(255, 255, 255, 0.4);
 
 .dragging-circle,
 .cover-circle {
-  fill: white;
-  stroke: black;
+  fill: black;
+  stroke: white;
   stroke-width: 2.5px;
   &:hover {
     cursor: pointer;
@@ -19,8 +19,8 @@ $opaque-white: rgba(255, 255, 255, 0.4);
 }
 
 .grey-circle {
-  fill: rgb(252, 252, 252);
-  stroke: rgb(100, 100, 100);
+  fill: rgb(155, 155, 155);
+  stroke: rgb(105, 105, 105);
   stroke-width: 2.5px;
   pointer-events: none;
   //&:hover {
@@ -30,7 +30,7 @@ $opaque-white: rgba(255, 255, 255, 0.4);
 
 .base-line {
   fill: none;
-  stroke: black;
+  stroke: white;
   stroke-width: 2.5px;
 }
 
@@ -42,19 +42,20 @@ $opaque-white: rgba(255, 255, 255, 0.4);
 }
 
 .segment-measure-text {
-  stroke: black;
+  stroke: white;
   pointer-events: none;
 }
 
 .node-measure-text {
-  text-shadow: -1.4px -1.4px $opaque-white,
-               -1.4px 1.4px $opaque-white,
-                1.4px 1.4px $opaque-white,
-                1.4px -1.4px $opaque-white,
-                -1.4px 0 $opaque-white,
-                0 1.4px $opaque-white,
-                1.4px 0 $opaque-white,
-                0 -1.4px $opaque-white;
+  fill: white;
+  // text-shadow: -1.4px -1.4px $opaque-white,
+  //              -1.4px 1.4px $opaque-white,
+  //               1.4px 1.4px $opaque-white,
+  //               1.4px -1.4px $opaque-white,
+  //               -1.4px 0 $opaque-white,
+  //               0 1.4px $opaque-white,
+  //               1.4px 0 $opaque-white,
+  //               0 -1.4px $opaque-white;
   pointer-events: none;
 
   &.head-text {
