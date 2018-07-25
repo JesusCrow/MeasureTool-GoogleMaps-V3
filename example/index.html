@@ -68,9 +68,13 @@
       console.log('changed', e.result);
 //      measureTool.removeListener('measure_change');
     });
+    measureTool.addListener('measure_tick', (e) => {
+      console.log('tickd', e.result);
+//      measureTool.removeListener('measure_change');
+    });
   }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTdH3AFSWLD3SrgbNqTGoRsg3U6W0qAAg&libraries=geometry&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzlLYISGjL_ovJwAehh6ydhB56fCCpPQw&libraries=geometry&callback=initMap"
         async defer></script>
 
 </body>

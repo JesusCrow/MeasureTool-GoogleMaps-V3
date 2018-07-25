@@ -9,7 +9,7 @@ import {Segment} from 'segment';
 import {drag} from 'd3-drag';
 import Helper from './helper';
 import {UnitTypeId} from './UnitTypeId';
-import {EVENT_START, EVENT_END, EVENT_CHANGE} from './events';
+import {EVENT_START, EVENT_END, EVENT_CHANGE, EVENT_TICK} from './events';
 import {ObjectAssign} from './polyfills';
 
 export default class MeasureTool {
@@ -734,6 +734,17 @@ export default class MeasureTool {
       }
     }
     this._area = area;
+    if (typeof this._events.get(EVENT_TICK) === "function") {
+      this._events.get(EVENT_TICK)({
+        result: {
+          length: this.length,
+          lengthText: this.lengthText,
+          area: this.area,
+          areaText: this.areaText,
+          segments: this.segments
+        }
+      });
+    }
     if (area > 0) {
       this._nodeText.select(':last-child')
         .text(`Total distance: ${this.lengthText}; Total area: ${this.areaText}.`);
