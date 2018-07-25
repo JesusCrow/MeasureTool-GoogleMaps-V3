@@ -122,6 +122,7 @@ export default class MeasureTool {
     this._mapClickEvent.remove();
     this._mapZoomChangedEvent.remove();
 
+    let coordinates = this._geometry.nodes
     this._geometry = new Geometry();
     this._onRemoveOverlay();
     this._setOverlay();
@@ -136,7 +137,8 @@ export default class MeasureTool {
           lengthText: this.lengthText,
           area: this.area,
           areaText: this.areaText,
-          segments: this.segments
+          segments: this.segments,
+          coordinates,
         }
       });
     }
@@ -727,7 +729,8 @@ export default class MeasureTool {
           lengthText: this.lengthText,
           area: this.area,
           areaText: this.areaText,
-          segments: this.segments
+          segments: this.segments,
+          coordinates: this._geometry.nodes,
         }
       });
     }
@@ -759,7 +762,8 @@ export default class MeasureTool {
         lengthText: this.lengthText,
         area: this.area,
         areaText: this.areaText,
-        segments: this.segments
+        segments: this.segments,
+        coordinates: this._geometry.nodes,
       }
     };
     if (this._lastMeasure && this._lastMeasure.result.lengthText === this.lengthText && this._lastMeasure.result.areaText === this.areaText) return;
