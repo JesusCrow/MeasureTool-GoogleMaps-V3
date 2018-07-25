@@ -28,6 +28,7 @@ export default class MeasureTool {
     this._options = {
       showSegmentLength: true,
       showAccumulativeLength: true,
+      showFinal: true,
       contextMenu: true,
       tooltip: true,
       unit: UnitTypeId.METRIC
@@ -732,7 +733,7 @@ export default class MeasureTool {
     }
 
     // label on last node
-    if (area > 0) {
+    if (this._options.showFinal && area > 0) {
       this._nodeText.select(':last-child')
         .text(`Total distance: ${this.lengthText}; Total area: ${this.areaText}.`);
     }
