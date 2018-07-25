@@ -27,7 +27,7 @@ export default class MeasureTool {
 
     this._options = {
       showSegmentLength: true,
-      showAccumulativeLength: false,
+      showAccumulativeLength: true,
       showFinal: false,
       contextMenu: true,
       tooltip: true,
