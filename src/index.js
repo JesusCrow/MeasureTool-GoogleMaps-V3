@@ -27,8 +27,8 @@ export default class MeasureTool {
 
     this._options = {
       showSegmentLength: true,
-      showAccumulativeLength: true,
-      showFinal: true,
+      showAccumulativeLength: false,
+      showFinal: false,
       contextMenu: true,
       tooltip: true,
       unit: UnitTypeId.METRIC
