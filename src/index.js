@@ -109,7 +109,7 @@ export default class MeasureTool {
     this._mapClickEvent = this._map.addListener('click', mouseEvent => this._checkClick(mouseEvent));
     this._mapZoomChangedEvent = this._map.addListener('zoom_changed', () => this._redrawOverlay());
     this._map.setOptions({draggableCursor: 'default'});
-    this._started = true;
+    this._emitTick(true)
 
     if (typeof this._events.get(EVENT_START) === "function") {
       this._events.get(EVENT_START)();
@@ -194,9 +194,8 @@ export default class MeasureTool {
   }
 
   // create measure_tick event
-  _emitTick () {
-  if (typeof this._events.get(EVENT_TICK) === "function") {
-    this._events.get(EVENT_TICK)({
+  _emitTick (begin) {
+    const data = {
       result: {
         length: this.length,
         lengthText: this.lengthText,
@@ -205,8 +204,27 @@ export default class MeasureTool {
         segments: this.segments,
         coordinates: this._geometry.nodes,
       }
-    });
-  }
+    }
+    const newTickID = JSON.stringify(data)
+
+    if (begin) {
+      this._lastTickID = newTickID;
+      this._started = true;
+      return;
+    }
+    
+    if (!this._lastTickID) {
+      this._lastTickID = newTickID;
+      return;
+    }
+    if (this._lastTickID === newTickID) return;
+    if (typeof this._events.get(EVENT_TICK) === "function") {
+      console.log(this._lastTickID)
+      console.log(newTickID)
+      this._events.get(EVENT_TICK)(data);
+    }
+    this._lastTickID = newTickID;
+
   }
 
   _initOverlay() {
@@ -323,7 +341,6 @@ export default class MeasureTool {
        !this._hoverCircle.select("circle").attr('cx')) {
       let latLng = [mouseEvent.latLng.lng(), mouseEvent.latLng.lat()];
       this._geometry.addNode(latLng);
-      this._emitTick()
       this._overlay.draw();
     }
     this._dragged = false;
@@ -566,7 +583,6 @@ export default class MeasureTool {
           this._geometry.insertNode(
             i + 1,
             this._projectionUtility.svgPointToLatLng([event.x, event.y]));
-          this._emitTick()
           this._updateLine();
           if (this._options.showSegmentLength) {
             this._updateSegmentText();
@@ -600,7 +616,6 @@ export default class MeasureTool {
         this._geometry.updateNode(
           i + 1,
           this._projectionUtility.svgPointToLatLng([event.x, event.y]));
-        this._emitTick()
         this._hideHoverCircle();
         this._overlay.draw();
         isDragged = false;
@@ -745,6 +760,8 @@ export default class MeasureTool {
       area = this._helper.computeArea(nodes)
     }
     this._area = area;
+
+    this._emitTick()
 
     // label on last node
     if (this._options.showFinal && area > 0) {
