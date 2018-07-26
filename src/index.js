@@ -11,6 +11,7 @@ import Helper from './helper';
 import {UnitTypeId} from './UnitTypeId';
 import {EVENT_START, EVENT_END, EVENT_CHANGE, EVENT_TICK} from './events';
 import {ObjectAssign} from './polyfills';
+import flattenCoordinates from './flattenCoordinates'
 
 export default class MeasureTool {
 
@@ -89,11 +90,16 @@ export default class MeasureTool {
   /**
    * start measuring
    */
-  start() {
+  start(coordinates) {
     if (this._started) return;
     this._overlay.setMap(this._map);
     this._geometry = new Geometry();
     this._segments = [];
+
+    if (coordinates && coordinates.constructor === Array && coordinates.length > 0) {
+      flattenCoordinates(coordinates)
+        .forEach(node => this._geometry.addNode(node))
+    }
 
     if (this._options.contextMenu && this._firstClick) {
       this._checkClick(this._firstClick);
