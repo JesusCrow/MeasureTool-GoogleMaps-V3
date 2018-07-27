@@ -781,18 +781,23 @@ export default class MeasureTool {
 
   _dispatchMeasureEvent() {
     if (!this._started) return;
-    const result = {
-      result: {
-        length: this.length,
-        lengthText: this.lengthText,
-        area: this.area,
-        areaText: this.areaText,
-        segments: this.segments,
-        coordinates: this._geometry.nodes,
-      }
-    };
-    if (this._lastMeasure && this._lastMeasure.result.lengthText === this.lengthText && this._lastMeasure.result.areaText === this.areaText) return;
     if (typeof this._events.get(EVENT_CHANGE) === "function") {
+      const result = {
+        result: {
+          length: this.length,
+          lengthText: this.lengthText,
+          area: this.area,
+          areaText: this.areaText,
+          segments: this.segments,
+          coordinates: this._geometry.nodes,
+        }
+      };
+      if (
+        this._lastMeasure &&
+        this._lastMeasure.result.lengthText === this.lengthText &&
+        this._lastMeasure.result.areaText === this.areaText &&
+        this._geometry.nodes.length !== 1
+      ) return;
       this._events.get(EVENT_CHANGE)(this._lastMeasure = result);
     }
   }
