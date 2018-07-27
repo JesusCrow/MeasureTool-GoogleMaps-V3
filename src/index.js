@@ -195,36 +195,33 @@ export default class MeasureTool {
 
   // create measure_tick event
   _emitTick (begin) {
-    const data = {
-      result: {
-        length: this.length,
-        lengthText: this.lengthText,
-        area: this.area,
-        areaText: this.areaText,
-        segments: this.segments,
-        coordinates: this._geometry.nodes,
-      }
-    }
-    const newTickID = JSON.stringify(data)
-
     if (begin) {
-      this._lastTickID = newTickID;
+      // this._lastTickID = newTickID;
       this._started = true;
       return;
     }
-    
-    if (!this._lastTickID) {
-      this._lastTickID = newTickID;
-      return;
-    }
-    if (this._lastTickID === newTickID) return;
+
     if (typeof this._events.get(EVENT_TICK) === "function") {
-      console.log(this._lastTickID)
-      console.log(newTickID)
+      const data = {
+        result: {
+          length: this.length,
+          lengthText: this.lengthText,
+          area: this.area,
+          areaText: this.areaText,
+          segments: this.segments,
+          coordinates: this._geometry.nodes,
+        }
+      }
+      const newTickID = JSON.stringify(data)
+      if (!this._lastTickID) {
+        this._lastTickID = newTickID;
+        return;
+      }
+      if (this._lastTickID === newTickID) return;
+    
+      this._lastTickID = newTickID;
       this._events.get(EVENT_TICK)(data);
     }
-    this._lastTickID = newTickID;
-
   }
 
   _initOverlay() {

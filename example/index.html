@@ -72,12 +72,14 @@
       console.error('tickd', e.result);
 //      measureTool.removeListener('measure_change');
     });
-    measureTool.start([[
-      [-116.71335014686588, 47.95272425175882],
-      [-116.71021732673648, 47.952810478513214],
-      [-116.71030315742496, 47.95384518834307],
-      [-116.71335014686588, 47.95272425175882],
-    ]])
+    measureTool.start(
+      [[
+        [-116.71335014686588, 47.95272425175882],
+        [-116.71021732673648, 47.952810478513214],
+        [-116.71030315742496, 47.95384518834307],
+        [-116.71335014686588, 47.95272425175882],
+      ]]
+    )
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzlLYISGjL_ovJwAehh6ydhB56fCCpPQw&libraries=geometry&callback=initMap"
