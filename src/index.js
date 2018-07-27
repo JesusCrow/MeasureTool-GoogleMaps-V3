@@ -19,6 +19,7 @@ export default class MeasureTool {
   get areaText() { return this._helper.formatArea(this._area || 0); };
   get length() { return this._length || 0; };
   get area() { return this._area || 0; };
+  get position() { return this._position || null; };
   get segments() { return this._segments || []};
 
   static get UnitTypeId() { return UnitTypeId};
@@ -200,22 +201,19 @@ export default class MeasureTool {
       const data = {
         result: {
           length: this.length,
-          lengthText: this.lengthText,
           area: this.area,
-          areaText: this.areaText,
-          segments: this.segments,
-          coordinates: this._geometry.nodes,
+          position: this.position,
         }
       }
-      const newTickID = JSON.stringify(data)
-      if (this._lastTickID && this._lastTickID === newTickID) return;
-      if (!this._lastTickID) {
-        this._lastTickID = newTickID;
-        this._events.get(EVENT_TICK)(data);
-        return;
-      }
+      // const newTickID = JSON.stringify(data)
+      // if (this._lastTickID && this._lastTickID === newTickID) return;
+      // if (!this._lastTickID) {
+      //   this._lastTickID = newTickID;
+      //   this._events.get(EVENT_TICK)(data);
+      //   return;
+      // }
     
-      this._lastTickID = newTickID;
+      // this._lastTickID = newTickID;
       this._events.get(EVENT_TICK)(data);
     }
   }
@@ -309,6 +307,8 @@ export default class MeasureTool {
     if (this._geometry) {
       this._updateArea(this._geometry.nodes.length - 1,
         this._geometry.nodes[this._geometry.nodes.length - 1]);
+      this._updatePosition(this._geometry.nodes.length - 1,
+        this._geometry.nodes[this._geometry.nodes.length - 1])
     }
     this._dispatchMeasureEvent();
   }
@@ -534,6 +534,8 @@ export default class MeasureTool {
           self._updateNodeTextPosition(i);
         }
         self._updateArea(i, self._projectionUtility.svgPointToLatLng([event.x, event.y]));
+        self._updateArea(i, self._projectionUtility.svgPointToLatLng([event.x, event.y]));
+        self._updatePosition(i, self._projectionUtility.svgPointToLatLng([event.x, event.y]));
       });
 
     circleDrag.on('start', function(d) {
@@ -594,6 +596,7 @@ export default class MeasureTool {
           this._updateNodeTextPosition(i + 1);
         }
         this._updateArea(i + 1, this._projectionUtility.svgPointToLatLng([event.x, event.y]));
+        this._updatePosition(i + 1, this._projectionUtility.svgPointToLatLng([event.x, event.y]));
       });
 
     lineDrag.on('start', () => {
@@ -615,6 +618,7 @@ export default class MeasureTool {
         this._showTooltipOnEvent(Config.tooltipText1);
       }
       this._updateArea(i + 1, this._projectionUtility.svgPointToLatLng([event.x, event.y]));
+      this._updatePosition(i + 1, this._projectionUtility.svgPointToLatLng([event.x, event.y]));
       this._hoverCircle.select("circle")
         .attr('class', "grey-circle");
       this._dragging = false;
@@ -734,12 +738,14 @@ export default class MeasureTool {
     return this._projectionUtility.latLngToSvgPoint(d)[1] + offset;
   }
 
-  /**
-   * Update area
-   * 
-   * @param {*} i index of updated point
-   * @param {*} pointToCompare updated point
-   */
+  _updatePosition(i, pointToCompare) {
+    if (!this._geometry) return;
+    if (this._geometry.nodes.length > 0) {
+      this._position = this._helper.computePosition(this._geometry.nodes)
+    }
+    this._emitTick()
+  }
+
   _updateArea(i, pointToCompare) {
     if (!this._geometry) return;
     let area = 0;
@@ -753,8 +759,6 @@ export default class MeasureTool {
       area = this._helper.computeArea(nodes)
     }
     this._area = area;
-
-    this._emitTick()
 
     // label on last node
     if (this._options.showFinal && area > 0) {

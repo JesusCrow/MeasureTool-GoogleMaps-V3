@@ -116,6 +116,15 @@ export default class Helper {
     return sum * this._lengthMultiplier;
   }
 
+  computePosition(points) {
+    let bounds = new google.maps.LatLngBounds()
+    points.forEach(p => {
+      const coordinate = new google.maps.LatLng(p[1], p[0])
+      bounds.extend(coordinate)
+    })
+    return bounds.getCenter().toJSON()
+  }
+
   computeArea(points) {
     return google.maps.geometry.spherical.computeArea(
       points.map(p => new google.maps.LatLng(p[1], p[0]))) * this._areaMultiplier;
