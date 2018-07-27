@@ -109,6 +109,7 @@ export default class MeasureTool {
     this._mapClickEvent = this._map.addListener('click', mouseEvent => this._checkClick(mouseEvent));
     this._mapZoomChangedEvent = this._map.addListener('zoom_changed', () => this._redrawOverlay());
     this._map.setOptions({draggableCursor: 'default'});
+    this._lastTickID = null;
     this._started = true;
 
     if (typeof this._events.get(EVENT_START) === "function") {
@@ -194,7 +195,7 @@ export default class MeasureTool {
   }
 
   // create measure_tick event
-  _emitTick (begin) {
+  _emitTick () {
     if (typeof this._events.get(EVENT_TICK) === "function") {
       const data = {
         result: {
@@ -207,8 +208,12 @@ export default class MeasureTool {
         }
       }
       const newTickID = JSON.stringify(data)
-      if (this._lastTickID === newTickID) return;
-      if (!this._lastTickID) this._lastTickID = newTickID;
+      if (this._lastTickID && this._lastTickID === newTickID) return;
+      if (!this._lastTickID) {
+        this._lastTickID = newTickID;
+        this._events.get(EVENT_TICK)(data);
+        return;
+      }
     
       this._lastTickID = newTickID;
       this._events.get(EVENT_TICK)(data);
